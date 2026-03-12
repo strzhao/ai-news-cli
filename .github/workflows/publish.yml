@@ -22,8 +22,9 @@ jobs:
       - name: Verify trusted publishing runtime
         run: |
           node --version
-          npm --version
-          node -e "const [major, minor, patch] = process.versions.npm.split('.').map(Number); const ok = major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1))); if (!ok) { console.error(`npm ${process.versions.npm} does not satisfy trusted publishing minimum 11.5.1`); process.exit(1); }"
+          NPM_VERSION=$(npm --version)
+          echo "$NPM_VERSION"
+          node -e 'const version = process.argv[1]; const [major, minor, patch] = version.split(".").map(Number); const ok = major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1))); if (!ok) { console.error(`npm ${version} does not satisfy trusted publishing minimum 11.5.1`); process.exit(1); }' "$NPM_VERSION"
       - name: Verify tag matches package.json version
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
